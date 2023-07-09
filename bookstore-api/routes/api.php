@@ -21,7 +21,10 @@ use App\Http\Controllers\CategoryController;
 Route::prefix('v1')->group(function () {
     Route::get('books', 'App\Http\Controllers\BookController@index');
     Route::get('book/{id}','App\Http\Controllers\BookController@view')->where('id', '[0-9]+');
+    Route::get('books/slug/{slug}', 'App\Http\Controllers\BookController@slug' );
     Route::get('categories/random/{count}', 'App\Http\Controllers\CategoryController@random');
     Route::get('books/top/{count}', 'App\Http\Controllers\BookController@top');
     Route::get('categories','App\Http\Controllers\CategoryController@index' );
+    Route::get('categories/slug/{slug}', 'App\Http\Controllers\CategoryController@slug');
+    Route::get('books/search/{keyword}', 'App\Http\Controllers\BookController@search');
 });

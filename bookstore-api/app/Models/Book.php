@@ -11,4 +11,9 @@ class Book extends Model
         'title', 'slug', 'description', 'author', 'publisher',
         'cover', 'price', 'weight', 'stock', 'status'
     ];
+
+    public function categories()
+    {
+        return $this->belongsToMany('App\Models\Category');
+    }
 }
