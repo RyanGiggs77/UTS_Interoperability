@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Auth as Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+
 
 class AuthController extends Controller
 {
@@ -101,13 +102,19 @@ class AuthController extends Controller
         $user = Auth::user();
         if ($user) {
             $user->api_token = null;
-            
+            $user->save();
         }
+        Auth::guard('web')->logout();
+    
         return response()->json([
             'status' => 'success',
-            'message' => 'logout berhasil',
+            'message' => 'Logout Berhasil',
             'data' => null
         ], 200);
     }
-
 }
+
+
+
+//$user_id = Auth::user()->id;
+//$user = User::where('id',$user_id )->first();

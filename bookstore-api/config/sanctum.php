@@ -64,4 +64,11 @@ return [
         'encrypt_cookies' => App\Http\Middleware\EncryptCookies::class,
     ],
 
+    'stateful' => [
+        'driver' => 'cookie',
+        'provider' => null,
+        'expiry' => null,
+        'cookie' => 'api_token',
+    ],
+
 ];

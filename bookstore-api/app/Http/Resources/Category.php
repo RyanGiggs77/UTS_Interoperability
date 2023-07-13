@@ -23,7 +23,5 @@ class Category extends JsonResource
             'message' => 'category data',
             'data' => $data
         ];
-
-
     }
 }
