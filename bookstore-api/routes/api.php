@@ -17,9 +17,11 @@ Route::prefix('v1')->group(function () {
         Route::post('logout',[AuthController::class,'logout']);
         Route::post('shipping', [ShopController::class, 'shipping']);
         Route::post('services', [ShopController::class, 'services']);
+        Route::post('payment', [ShopController::class, 'payment']);
+        Route::get('my-order',[ShopController::class, 'myOrder']);
         
     });
-    Route::get('books', [BookController::class, 'index']);
+    Route::get('books', [BaookController::class, 'index']);
     Route::get('book/{id}', [BookController::class, 'view'])->where('id', '[0-9]+');
     Route::get('books/slug/{slug}', [BookController::class, 'slug']);
     Route::get('categories/random/{count}', [CategoryController::class, 'random']);
