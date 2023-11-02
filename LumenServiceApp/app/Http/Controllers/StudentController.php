@@ -63,7 +63,7 @@ class StudentController extends Controller
         $post->delete();
 
         $message = [
-            "message" => "post deleted",
+            "message" => "students deleted",
             "post_id" => $id
         ];
 

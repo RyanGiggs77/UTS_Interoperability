@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Productcategory;
 use Illuminate\Http\Request;
 
-class ProductcategoryController extends Controller
+class ProductController extends Controller
 {
     public function index()
     {
@@ -63,7 +63,7 @@ class ProductcategoryController extends Controller
         $post->delete();
 
         $message = [
-            "message" => "post deleted",
+            "message" => "product deleted",
             "post_id" => $id
         ];
 
