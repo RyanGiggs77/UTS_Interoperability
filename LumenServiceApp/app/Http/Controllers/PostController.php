@@ -3,20 +3,34 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class PostController extends Controller
 {
     public function index(Request $request)
-{
+    {
     $acceptHeader = $request->header('Accept');
 
     // validate: only application/json or application/xml are valid
     if ($acceptHeader === 'application/json' || $acceptHeader === 'application/xml') {
-        $posts = Post::OrderBy("id", "DESC")->paginate(10);
+        $posts = Post::OrderBy("id", "DESC")->paginate(3);
+    
+
+        $response = [
+            "total_count" => $posts->total(),
+            "limit" => $posts->perPage(),
+            "pagination" => [
+                "next_page" => $posts->nextPageUrl(),
+                "current_page" => $posts->currentPage()
+            ],
+            "data" => $posts->items(),
+        ];
+
+
 
         if ($acceptHeader === 'application/json') {
             // response json
-            return response()->json($posts->items('data'), 200);
+            return response()->json($response, 200);
         } else {
             // create xml posts element
             $xml = new \SimpleXMLElement('<posts/>');
@@ -44,22 +58,37 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
+        $input = $request->all();
+        $validationRules = [
+            'title' => 'required|min:5',
+            'content' => 'required|min:10',
+            'status' => 'required|in:draft,published',
+            'user_id' => 'required|numeric',
+            'categories_id' => 'required|numeric',
+            'students_id' => 'required|numeric',
+        ];
+
+        $validator = Validator::make($input, $validationRules);
+
+
         $acceptHeader = $request->header('Accept');
 
-        // validate: only application/json or application/xml are valid
+         
         if ($acceptHeader === 'application/json' || $acceptHeader === 'application/xml') {
             $contentTypeHeader = $request->header('Content-Type');
 
-            // validate: only application/json is valid
             if ($contentTypeHeader === 'application/json') {
-                $input = $request->all();
+
+                if ($validator->fails()) {
+                    return response()->json($validator->errors(), 400);
+                }
+
                 $post = Post::create($input);
                 return response()->json($post, 200);
             }
             else if ($contentTypeHeader === 'application/xml') {
-                $xmlData = $request->getContent();
-                $xml = simplexml_load_string($xmlData);
-
+                $xml = new \SimpleXMLElement($request->getContent());
+                
                 if ($xml === false) {
                     return response('Invalid XML', 400);
                 }
@@ -125,18 +154,33 @@ class PostController extends Controller
 
     public function update(Request $request, $id)
     {
-
+        $input = $request->all();
         $acceptHeader = $request->header('Accept');
+
+        $validationRules = [
+            'title' => 'required|min:5',
+            'content' => 'required|min:10',
+            'status' => 'required|in:draft,published',
+            'user_id' => 'required|numeric',
+            'categories_id' => 'required|numeric',
+            'students_id' => 'required|numeric',
+        ];
+
+        $validator = Validator::make($input,$validationRules);
 
         if($acceptHeader === 'application/json' || $acceptHeader === 'application/xml'){
             $contentTypeHeader = $request->header('Content-Type');
 
             if($contentTypeHeader === 'application/json'){
-                $input = $request->all();
+                
                 $post = Post::find($id);
 
                 if(!$post){
                     abort(404);
+                }
+
+                if($validator->fails()){
+                    return response()->json($validator->errors(),400);
                 }
 
                 $post->fill($input);

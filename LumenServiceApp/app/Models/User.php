@@ -2,39 +2,22 @@
 
 namespace App\Models;
 
-use Illuminate\Auth\Authenticatable;
-use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
-use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+
+use Illuminate\Auth\Authenticatable;
 use Laravel\Lumen\Auth\Authorizable;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 
-
-
-class User extends Model implements AuthenticatableContract, AuthorizableContract
+class User extends Model
 {
-    use Authenticatable, Authorizable, HasFactory;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var string[]
-     */
+    use Authenticatable, Authorizable;
     protected $fillable = [
-        'name', 'email',
+        'name', 'email', 'password'
     ];
 
-    /**
-     * The attributes excluded from the model's JSON form.
-     *
-     * @var string[]
-     */
     protected $hidden = [
-        'password',
+        'password'
     ];
-    public function isAdmin()
-    {
-        // Implementasikan logika untuk menentukan apakah pengguna adalah admin
-        return $this->role === 'admin'; // Contoh: Admin adalah peran 'admin'
-    }
+        
 }

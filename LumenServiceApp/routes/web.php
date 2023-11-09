@@ -61,3 +61,8 @@ $router->post('student','StudentController@store');
 $router->get('student/{id}', 'StudentController@show');
 $router->put('student/{id}','StudentController@update');
 $router->delete('student/{id}','StudentController@destroy');
+
+// User Controller
+$router->group(['prefix' => 'auth'], function () use ($router) {
+    $router->post('/register', 'AuthController@register');
+});
