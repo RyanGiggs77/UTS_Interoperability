@@ -53,37 +53,56 @@ class Handler extends ExceptionHandler
      * @throws \Throwable
      */
     public function render($request, Throwable $exception)
-    {
-        // return parent::render($request, $exception);
+{
+    if (env('APP_DEBUG')) {
+        return parent::render($request, $exception);
+    }
 
-        // Tugas Pertemuan 7
-        if (env('APP_DEBUG')) {
-            return parent::render($request, $exception);
-        }
+    $status = Response::HTTP_INTERNAL_SERVER_ERROR;
+    $message = 'HTTP_INTERNAL_SERVER_ERROR';
 
+    if ($exception instanceof HttpResponseException) {
         $status = Response::HTTP_INTERNAL_SERVER_ERROR;
-        if ($exception instanceof HttpResponseException) {
-            $status = Response::HTTP_INTERNAL_SERVER_ERROR;
-        } elseif ($exception instanceof MethodNotAllowedHttpException) {
-            $status = Response::HTTP_METHOD_NOT_ALLOWED;
-            $exception = new MethodNotAllowedHttpException([],'HTTP_METHOD_NOT_ALLOWED', $exception);
-        } elseif ($exception instanceof NotFoundHttpException){
-            $status = Response::HTTP_NOT_FOUND;
-            $exception = new NotFoundHttpException('HTTP_NOT_FOUND', $exception);
-        }elseif ($exception instanceof AuthorizationException) {
-            $status = Response::HTTP_FORBIDDEN;
-            $exception = new NotFoundHttpException('HTTP_FORBIDDEN', $status);
-        }elseif ($exception instanceof \Dotenv\Exception\ValidationException && $exception->getResponse()) {
-            $status = Response::HTTP_BAD_REQUEST;
-            $exception = new \Dotenv\Exception\ValidationException('HTTP_BAD_REQUEST', $status, $exception);
-        }elseif ($exception) {
-            $exception = new HttpException($status, 'HTTP_INTERNAL_SERVER_ERROR');
-        }
+        $message = 'HTTP_INTERNAL_SERVER_ERROR';
+    } elseif ($exception instanceof MethodNotAllowedHttpException) {
+        $status = Response::HTTP_METHOD_NOT_ALLOWED;
+        $message = 'HTTP_METHOD_NOT_ALLOWED';
+    } elseif ($exception instanceof NotFoundHttpException) {
+        $status = Response::HTTP_NOT_FOUND;
+        $message = 'HTTP_NOT_FOUND';
+    } elseif ($exception instanceof AuthorizationException) {
+        $status = Response::HTTP_FORBIDDEN;
+        $message = 'HTTP_FORBIDDEN';
+    } elseif ($exception instanceof \Illuminate\Validation\ValidationException && $exception->getResponse()) {
+        $status = Response::HTTP_BAD_REQUEST;
+        $message = 'HTTP_BAD_REQUEST';
+    } elseif ($exception) {
+        $status = Response::HTTP_INTERNAL_SERVER_ERROR;
+        $message = 'HTTP_INTERNAL_SERVER_ERROR';
+    } elseif ($exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
+        $status = Response::HTTP_NOT_FOUND;
+        $message = 'HTTP_NOT_FOUND';
+    } elseif ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+        $status = Response::HTTP_NOT_FOUND;
+        $message = 'HTTP_NOT_FOUND';
+    } elseif ($exception instanceof \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException) {
+        $status = Response::HTTP_METHOD_NOT_ALLOWED;
+        $message = 'HTTP_METHOD_NOT_ALLOWED';
+    } elseif ($exception instanceof \Symfony\Component\HttpKernel\Exception\HttpException) {
+        $status = $exception->getStatusCode();
+        $message = $exception->getMessage();
+    } elseif ($exception instanceof \Illuminate\Auth\AuthenticationException) {
+        $status = Response::HTTP_UNAUTHORIZED;
+        $message = 'HTTP_UNAUTHORIZED';
+    } elseif ($exception instanceof \Illuminate\Database\QueryException) {
+        $status = Response::HTTP_INTERNAL_SERVER_ERROR;
+        $message = 'HTTP_INTERNAL_SERVER_ERROR';
+    } 
 
-        return response()->json([
-            'success' => false,
-            'status' => $status,
-            'message' => $exception->getMessage(),
-        ], $status);
+    return response()->json([
+        'success' => false,
+        'status' => $status,
+        'message' => $message,
+    ], $status);
     }
 }

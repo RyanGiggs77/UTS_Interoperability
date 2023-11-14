@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
@@ -13,9 +14,7 @@ class PostController extends Controller
 
     // validate: only application/json or application/xml are valid
     if ($acceptHeader === 'application/json' || $acceptHeader === 'application/xml') {
-        $posts = Post::OrderBy("id", "DESC")->paginate(3);
-    
-
+        $posts = Post::Where(['user_id' => Auth::user()->id])->orderBy('id', 'desc')->paginate(10);
         $response = [
             "total_count" => $posts->total(),
             "limit" => $posts->perPage(),
