@@ -5,6 +5,7 @@ use App\Models\Library;
 use App\Models\User;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LibraryController extends Controller
 {
@@ -20,7 +21,7 @@ class LibraryController extends Controller
 
     public function index(Request $request)
     {
-        $library = Library::OrderBy("id", "DESC")->paginate(10);
+        $library = Library::where('users_id', Auth::user()->id)->orderBy('id', 'DESC')->paginate(10)->toArray();
 
         $output = [
             "message" => "library",
@@ -53,39 +54,41 @@ class LibraryController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $input = $request->all();
-        $acceptHeader = $request->header('Accept');
-        $contentTypeHeader = $request->header('Content-Type');
+{
+    $input = $request->all();
+    $acceptHeader = $request->header('Accept');
+    $contentTypeHeader = $request->header('Content-Type');
 
-        if($acceptHeader === 'application/json' || $acceptHeader === 'application/xml'){
+    if ($acceptHeader === 'application/json' || $acceptHeader === 'application/xml') {
 
-            if($contentTypeHeader === 'application/json'){
-                $library = library::create($input);
-                return response()->json($library, 200);
+        if ($contentTypeHeader === 'application/json') {
+            $library = Library::create($input);
+            return response()->json($library, 200);
+        } elseif ($contentTypeHeader === 'application/xml') {
+            $xml = new \SimpleXMLElement('<Library/>');
+
+            if ($xml === false) {
+                return response('Invalid xml', 400);
             }
-            else if($contentTypeHeader === 'application/xml'){
-                $xml = new \SimpleXMLElement('<Library/>');
 
-                if($xml === false){
-                    return response('Invalid xml', 400);
-                }
+            $library = Library::create([
+                'title' => $xml->addChild('title', $input['title']),
+                'publish' => $xml->addChild('publish', $input['publish']),
+                'description' => $xml->addChild('description', $input['description']),
+                'users_id' => $xml->addChild('users_id', $input['users_id']),
+            ]);
 
-                $library = Library::create([
-                    'title' => $xml->title,
-                    'publish' => $xml->publish,
-                    'description' => $xml->description,
-                    'users_id' => $xml->users_id,
-                ]);
-                $library->save();
-                return $xml->asXML();
-            } else {
-                return response('Unsupported Media Type', 415);
-            }
+            $library->save();
+
+            return $xml->asXML();
         } else {
-            return response('Not Acceptable!', 406);
+            return response('Unsupported Media Type', 415);
         }
+    } else {
+        return response('Not Acceptable!', 406);
     }
+}
+
 
     public function show($id)
     {

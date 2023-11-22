@@ -18,11 +18,11 @@ return new class extends Migration
             $table->string('nama' );
             $table->string('email');
             $table->string('password');
-            $table->text('alamat');
-            $table->integer('umur');
-            $table->string('kelas');
-            $table->integer('nohp');
-            $table->integer('tahun_bergabung');
+            $table->text('alamat')->nullable();
+            $table->integer('umur')->nullable();
+            $table->string('kelas')->nullable();
+            $table->integer('nohp')->nullable();
+            $table->integer('tahun_bergabung')->nullable();
             
             $table->timestamps();
 
@@ -36,4 +36,5 @@ return new class extends Migration
     {
         Schema::dropIfExists('users');
     }
+
 };

@@ -23,9 +23,16 @@ $router->get('user/{id}', 'UserController@show');
 $router->put('user/{id}', 'UserController@update');
 $router->delete('user/{id}', 'UserController@destroy');
 
-$router->get('library', 'LibraryController@index');
-$router->post('library', 'LibraryController@store');
-$router->get('library/{id}', 'LibraryController@show');
-$router->get('/library/{id}/user', 'LibraryController@getUserPosts');
-$router->put('library/{id}', 'LibraryController@update');
-$router->delete('library/{id}', 'LibraryController@destroy');
+Route::group(['middleware' => ['auth']], function ($router) {
+    $router->get('library', 'LibraryController@index');
+    $router->post('library', 'LibraryController@store');
+    $router->get('library/{id}', 'LibraryController@show');
+    $router->get('/library/{id}/user', 'LibraryController@getUserPosts');
+    $router->put('library/{id}', 'LibraryController@update');
+    $router->delete('library/{id}', 'LibraryController@destroy');
+});
+
+$router->group(['prefix' => 'auth'], function () use ($router) {
+    $router->post('/register', 'AuthController@register');
+    $router->post('/login', 'AuthController@login');
+});
