@@ -8,6 +8,7 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Lumen\Auth\Authorizable;
+use Carbon\Carbon;
 
 class library extends Model 
 {
@@ -21,6 +22,8 @@ class library extends Model
     protected $fillable = [
         'title', 'publish','description','users_id',
     ];
+
+    
 
     /**
      * The attributes excluded from the model's JSON form.
