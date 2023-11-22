@@ -16,3 +16,16 @@
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
+
+$router->get('user', 'UserController@index');
+$router->post('user', 'UserController@store');
+$router->get('user/{id}', 'UserController@show');
+$router->put('user/{id}', 'UserController@update');
+$router->delete('user/{id}', 'UserController@destroy');
+
+$router->get('library', 'LibraryController@index');
+$router->post('library', 'LibraryController@store');
+$router->get('library/{id}', 'LibraryController@show');
+$router->get('/library/{id}/user', 'LibraryController@getUserPosts');
+$router->put('library/{id}', 'LibraryController@update');
+$router->delete('library/{id}', 'LibraryController@destroy');

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Lumen\Auth\Authorizable;
 
-class User extends Model implements AuthenticatableContract, AuthorizableContract
+class library extends Model 
 {
     use Authenticatable, Authorizable, HasFactory;
 
@@ -19,7 +19,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var string[]
      */
     protected $fillable = [
-        'nama', 'email','password','alamat','umur','kelas','nohp','tahun_bergabung',
+        'title', 'publish','description','users_id',
     ];
 
     /**
@@ -32,4 +32,14 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         return $this->hasMany('App\Models\Library');
     }
+
+    /**
+     * A post belongs to a user
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+   */
+  public function user()
+  {
+      return $this->belongsTo('App\Models\User');
+  }
 }
