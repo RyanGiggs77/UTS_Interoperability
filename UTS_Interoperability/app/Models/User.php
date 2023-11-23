@@ -61,4 +61,13 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         return [];
     }
+
+    public function getUserPosts($id)
+{
+    $user = User::find($id);
+    $libraries = $user->library;
+
+    return $libraries;
+}
+
 }

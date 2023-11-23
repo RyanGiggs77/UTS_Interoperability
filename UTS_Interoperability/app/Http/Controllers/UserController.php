@@ -1,11 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Library;
 use App\Models\User;
-
-
-
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -57,9 +53,6 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $input = $request->all();
-        
-
-
         $acceptHeader = $request->header('Accept');
 
          
@@ -78,8 +71,8 @@ class UserController extends Controller
                     return response('Invalid XML', 400);
                 }
         
-                $user = User::create([
-                    'id' => $xml->id, // This assumes the XML root element is 'post
+                $post = User::create([
+                    'id' => $xml->id,
                     'nama' => $xml->nama,
                     'email' => $xml->email,
                     'password' => $xml->password,
@@ -91,9 +84,8 @@ class UserController extends Controller
                     'created_at' => $xml->created_at,
                     'updated_at' => $xml->updated_at,
                 ]);
-
-                $user->save();
-                return $xml = $user();
+                $post->save();
+                return $xml->asXML();
                 
             } else {
                 return response('Unsupported Media Type', 415);
@@ -164,7 +156,7 @@ class UserController extends Controller
                     'updated_at' => $xml->updated_at,
                 ]);
                 $user->save();
-                return $xml = $user();
+                return $xml->asXML();
 
             }
             else{
@@ -180,10 +172,11 @@ class UserController extends Controller
     public function destroy($id)
     {
         $user = User::find($id);
+        $user->delete();
 
         $acceptHeader = request()->header('Accept');
         if($acceptHeader === 'application/json'){
-            $user->delete();
+            
             $message = [
                 'message' => 'deleted successfully',
                 'user_id' => $id,

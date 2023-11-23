@@ -31,10 +31,7 @@ class library extends Model
      * @var string[]
      */
     
-     public function library()
-    {
-        return $this->hasMany('App\Models\Library');
-    }
+
 
     /**
      * A post belongs to a user

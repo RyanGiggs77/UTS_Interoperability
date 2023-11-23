@@ -17,13 +17,16 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-$router->get('user', 'UserController@index');
-$router->post('user', 'UserController@store');
-$router->get('user/{id}', 'UserController@show');
-$router->put('user/{id}', 'UserController@update');
-$router->delete('user/{id}', 'UserController@destroy');
+$router->group(['middleware' => ['auth']], function ($router){
+    $router->get('user', 'UserController@index');
+    $router->post('user', 'UserController@store');
+    $router->get('user/{id}', 'UserController@show');
+    $router->put('user/{id}', 'UserController@update');
+    $router->delete('user/{id}', 'UserController@destroy');
+});
 
-Route::group(['middleware' => ['auth']], function ($router) {
+
+$router->group(['middleware' => ['auth']], function ($router) {
     $router->get('library', 'LibraryController@index');
     $router->post('library', 'LibraryController@store');
     $router->get('library/{id}', 'LibraryController@show');

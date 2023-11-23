@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator; 
+
 
 class AuthController extends Controller
 {
@@ -34,7 +36,7 @@ class AuthController extends Controller
         ];
 
         // Create a validator instance
-        $validator = \Validator::make($input, $validationRules);
+        $validator = Validator::make($input, $validationRules);
 
         // Check if validation fails
         if ($validator->fails()) {
@@ -46,6 +48,12 @@ class AuthController extends Controller
         $user = new User;
         $user->nama = $request->input('nama');
         $user->email = $request->input('email');
+        $user->alamat = $request->input('alamat');
+        $user->tahun_bergabung = $request->input('tahun_bergabung');
+        $user->umur = $request->input('umur');
+        $user->kelas = $request->input('kelas');
+        $user->nohp = $request->input('nohp');
+
 
         // Hash the plain password and save it to the user
         $plainPassword = $request->input('password');
@@ -69,7 +77,7 @@ class AuthController extends Controller
             'password' => 'required|string',
         ];
 
-        $validator = \Validator::make($input, $validationRules);
+        $validator = Validator::make($input, $validationRules);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
